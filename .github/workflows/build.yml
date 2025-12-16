@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: . 
-          push: false <
+          push: false
           tags: |
             ${{ env.GHCR_IMAGE }}:${{ github.sha }} 
             ${{ env.GHCR_IMAGE }}:latest
