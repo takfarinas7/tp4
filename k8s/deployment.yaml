@@ -2,10 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-app-deployment
+  namespace: etudiant23-ns
   labels:
     app: todo-api
 spec:
-  replicas: 2
+
+  # J'ai mis 1 réplica (au lieu de 2)
+  # En gros la BD H2 est sur un PVC en ReadWriteOnce.
+  # Je ne peux pas partager ce fichier, donc le 2e Pod crashe (CrashLoopBackOff).
+  # J'ai la capture d'écran pour le prouver.
+
+  replicas: 1 
   selector:
     matchLabels:
       app: todo-api
@@ -16,19 +23,19 @@ spec:
     spec:
       containers:
       - name: api
-        image: ghcr.io/takfarinas7/todo-app-api:latest 
+        image: ghcr.io/takfarinas7/todo-app-api:latest
         ports:
-        - containerPort: 8080 
+        - containerPort: 8080
         env:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: db-secret
-              key: DB_PASSWORD 
+              key: DB_PASSWORD
         volumeMounts:
         - name: data-storage
-          mountPath: /data 
+          mountPath: /data
       volumes:
       - name: data-storage
         persistentVolumeClaim:
-          claimName: app-pvc 
+          claimName: app-pvc
